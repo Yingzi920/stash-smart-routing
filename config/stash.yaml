@@ -1,0 +1,79 @@
+# Stash 智能分流配置
+# 使用前：把订阅 URL 替换为你自己的 Stash/Clash YAML 节点订阅地址。
+
+mode: rule
+log-level: warning
+
+dns:
+  default-nameserver:
+    - system
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  proxy-server-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver-policy:
+    'geosite:cn':
+      - 223.5.5.5
+      - 119.29.29.29
+
+proxy-providers:
+  subscription:
+    # 必须是返回顶层 proxies 字段的 Stash/Clash YAML 节点集合。
+    url: https://example.com/your-stash-provider.yaml
+    path: ./providers/subscription.yaml
+    interval: 3600
+
+proxy-groups:
+  - name: '⚡ 自动选择'
+    type: url-test
+    use:
+      - subscription
+    # 每 5 分钟重新测速，自动选择最低延迟的健康节点。
+    interval: 300
+    lazy: false
+
+rules:
+  # 局域网与本机地址直连。
+  - IP-CIDR,0.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,224.0.0.0/4,DIRECT,no-resolve
+  - IP-CIDR6,::1/128,DIRECT,no-resolve
+  - IP-CIDR6,fc00::/7,DIRECT,no-resolve
+  - IP-CIDR6,fe80::/10,DIRECT,no-resolve
+
+  # 微信与腾讯核心域名优先直连。
+  - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+  - DOMAIN-SUFFIX,wx.qq.com,DIRECT
+  - DOMAIN-SUFFIX,wechat.com,DIRECT
+  - DOMAIN-SUFFIX,wechatapp.com,DIRECT
+  - DOMAIN-SUFFIX,wechatpay.com,DIRECT
+  - DOMAIN-SUFFIX,weixinbridge.com,DIRECT
+  - DOMAIN-SUFFIX,tenpay.com,DIRECT
+  - DOMAIN-SUFFIX,qq.com,DIRECT
+  - DOMAIN-SUFFIX,qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,qlogo.cn,DIRECT
+  - DOMAIN-SUFFIX,gtimg.cn,DIRECT
+  - DOMAIN-SUFFIX,gtimg.com,DIRECT
+  - DOMAIN-SUFFIX,idqqimg.com,DIRECT
+  - DOMAIN-SUFFIX,qqmail.com,DIRECT
+  - DOMAIN-SUFFIX,tencent.com,DIRECT
+  - DOMAIN-SUFFIX,tencent-cloud.net,DIRECT
+  - DOMAIN-SUFFIX,myqcloud.com,DIRECT
+  - DOMAIN-SUFFIX,qcloud.com,DIRECT
+  - DOMAIN-SUFFIX,qcloudimg.com,DIRECT
+  - DOMAIN-SUFFIX,url.cn,DIRECT
+
+  # 腾讯生态与中国大陆常见网站/APP 域名直连。
+  - GEOSITE,tencent,DIRECT
+  - GEOSITE,cn,DIRECT
+
+  # 中国大陆 IP 直连；其他流量由最低延迟节点代理。
+  - GEOIP,CN,DIRECT
+  - MATCH,⚡ 自动选择
