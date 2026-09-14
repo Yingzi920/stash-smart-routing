@@ -1,0 +1,5 @@
+# 本地私人配置与 Stash 缓存
+config/stash.local.yaml
+providers/
+*.log
+.DS_Store
