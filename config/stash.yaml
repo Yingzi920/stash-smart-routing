@@ -48,6 +48,46 @@ rules:
   - IP-CIDR6,fc00::/7,DIRECT,no-resolve
   - IP-CIDR6,fe80::/10,DIRECT,no-resolve
 
+  # 国外 AI 与 Apple Intelligence 必须优先走代理。
+  # 这些规则必须位于 GEOSITE,cn 和 GEOIP,CN 之前，避免被国内规则抢先命中。
+  - GEOSITE,apple-intelligence,⚡ 自动选择
+  - GEOSITE,category-ai-!cn,⚡ 自动选择
+  - GEOSITE,google-gemini,⚡ 自动选择
+
+  # 关键服务的显式兜底规则，降低上游 GEOSITE 分类变动带来的漏匹配风险。
+  - DOMAIN-SUFFIX,openai.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,chatgpt.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,oaistatic.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,oaiusercontent.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,anthropic.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,claude.ai,⚡ 自动选择
+  - DOMAIN-SUFFIX,gemini.google.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,deepmind.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,perplexity.ai,⚡ 自动选择
+  - DOMAIN-SUFFIX,x.ai,⚡ 自动选择
+  - DOMAIN-SUFFIX,grok.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,copilot.microsoft.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,copilot.cloud.microsoft,⚡ 自动选择
+  - DOMAIN-SUFFIX,githubcopilot.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,apple-relay.apple.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,apple-relay.cloudflare.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,apple-relay.fastly-edge.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,apple-relay.mask.apple-dns.net,⚡ 自动选择
+  - DOMAIN,gspe1-ssl.ls.apple.com,⚡ 自动选择
+
+  # 苹果 AI 教程中的 Siri / iCloud Mask 兼容端点。
+  # 使用精确域名，避免把 App Store 静态资源或整个 Apple 定位服务一并代理。
+  - DOMAIN,guzzoni.apple.com,⚡ 自动选择
+  - DOMAIN,mask-api.fe.apple-dns.net,⚡ 自动选择
+  - DOMAIN,mask-api.icloud.com,⚡ 自动选择
+  - DOMAIN,mask-t.apple-dns.net,⚡ 自动选择
+  - DOMAIN,mask.apple-dns.net,⚡ 自动选择
+  - DOMAIN,gateway.icloud.com,⚡ 自动选择
+  - DOMAIN,mask-h2.icloud.com,⚡ 自动选择
+  - DOMAIN,mask.icloud.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,cp4.cloudflare.com,⚡ 自动选择
+  - DOMAIN-SUFFIX,smoot.apple.com,⚡ 自动选择
+
   # 微信与腾讯核心域名优先直连。
   - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
   - DOMAIN-SUFFIX,wx.qq.com,DIRECT
