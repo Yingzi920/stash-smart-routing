@@ -1,0 +1,19 @@
+# 仅用于展示远程代理集合所需的文件结构。
+# 这些地址与凭据不可用，请替换为真实节点，且不要提交私密信息。
+proxies:
+  - name: example-ss-1
+    type: ss
+    server: 192.0.2.1
+    port: 443
+    cipher: AEAD_CHACHA20_POLY1305
+    password: change-me
+    benchmark-url: http://www.apple.com
+    benchmark-timeout: 5
+  - name: example-ss-2
+    type: ss
+    server: 198.51.100.1
+    port: 443
+    cipher: AEAD_CHACHA20_POLY1305
+    password: change-me
+    benchmark-url: http://www.apple.com
+    benchmark-timeout: 5
